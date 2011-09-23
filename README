@@ -1,1 +1,5 @@
-First file
+Mapd will allow you to display your checkins on a map.
+
+It allows you to pull data from Foursquare and display it on a map. The project is far from finished, and I will be adding in more code soon.
+
+Currently it just allows an Open Auth login via Foursquare and stores the access credentials in memory.
