@@ -1,6 +1,6 @@
 from mapd.auth import credentials
 from mapd.config import foursquare_settings
-from mapd.util import net_util
+from mapd.utils import net_utils
 
 import json
 
@@ -40,11 +40,7 @@ class FoursquareAuthManager(AuthManager):
       Foursquare credentials of the given user.
     """
     access_token_url = _ACCESS_TOKEN_URL % code
-    raw_json = net_util.GenericFetchUrl(access_token_url)
-    if not raw_json:
-      return None
-
-    response = json.loads(raw_json.read())
+    response = net_utils.GetJsonFromUrl(access_token_url)
     if 'access_token' in response:
       return credentials.FoursquareCredentials(response['access_token'])
 

@@ -53,15 +53,19 @@ def DefaultHandler(request):
   if not mapd_credentials.is_authorized:
     return HttpResponseRedirect(auth_manager.FoursquareAuthManager()
         .GetAuthorizationURL())
+
+  user_info = session_manager.GetUserInformation()
   context = Context({
-    'is_authorized' : mapd_credentials.is_authorized,
+    'display_name' : user_info.name,
+    'recent_checkins' : user_info.GetRecentCheckins(),
   })
 
-  return HttpResponse(loader.get_template('base.html').render(context))
+  return HttpResponse(loader.get_template('index.html').render(context))
 
 def ViewHandler(request):
   """Handle request to view information.
   """
+  request.session.clear()
   return HttpResponse('Move along people, nothing to view here')
 
 def UserRequestHandler(request):

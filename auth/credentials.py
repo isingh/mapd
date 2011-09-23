@@ -8,7 +8,7 @@ class MapdCredentials(object):
     """
     # Currently we support only Foursquare, but we should be able to store
     # the credentials from various providers.
-    self._credentials = Bunch(foursquare=None)
+    self._credentials = Bunch(foursquare=FoursquareCredentials())
 
   def AddFoursquareAccess(self, access_token):
     """Add this user's foursquare credentials.

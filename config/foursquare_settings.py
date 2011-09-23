@@ -2,7 +2,7 @@
 """
 
 # Access URL for Foursquare
-API_URL = 'http://api.foursqaure.com'
+API_URL = 'https://api.foursquare.com/v2'
 AUTH_URL = 'https://foursquare.com/oauth2/authenticate'
 
 # App specific access id and secret

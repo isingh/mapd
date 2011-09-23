@@ -1,6 +1,7 @@
 """Network related utility functions.
 """
 import cStringIO as StringIO
+import json
 import logging
 import urllib2
 
@@ -25,3 +26,22 @@ def GenericFetchUrl(url):
   if response:
     return StringIO.StringIO(response.read())
   return None
+
+def GetJsonFromUrl(url):
+  """Retrieves the URL and tries to parse the JSON from the response.
+
+  Args:
+    url - The URL that needs to be fetched.
+
+  Returns:
+    The JSON dict containing the reply. None if there was an error in parsing
+    or the url couldnt be retreived.
+  """
+  raw_json = GenericFetchUrl(url)
+  try:
+    if raw_json:
+      return json.loads(raw_json.read())
+  except:
+    logging.error('Error retreiving URL: %s' % url)
+  return None
+

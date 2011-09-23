@@ -1,5 +1,3 @@
-
-
 class BaseUser(object):
   """Base class to represent a user.
   """
