@@ -4,12 +4,23 @@ from mapd.auth import credentials
 class SessionManager(object):
   """Manage and retrieve data from the current session
   """
-
-  @staticmethod
-  def GetCredentials(request):
-    """Get the credentials from the given request session.
+  def __init__(self, session):
+    """Initialize a session manager for the given request.
 
     Args:
-      request - Http Request, from whose session we want the credentials.
+      session - The session object.
     """
-    return request.session.get('credentials', credentials.MapdCredentials())
+    self._session = session
+
+  def GetCredentials(self):
+    """Get the credentials from the given request session.
+    """
+    return self._session.get('credentials', credentials.MapdCredentials())
+
+  def SetCredentials(self, credentials):
+    """Set the credentials for the given session.
+
+    Args:
+      credentials - The credentials for the given session.
+    """
+    self._session['credentials'] = credentials

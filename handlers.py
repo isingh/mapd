@@ -28,16 +28,28 @@ def AuthHandler(request):
   """Handle the authentication requests coming in.
   """
   code = _GetQueryParam(request, 'code')
+  session_manager = SessionManager(request.session)
+
   if code is None:
     return HttpResponse('Got code: %s.' % code)
 
-  auth_mgr = auth_manager.FoursquareAuthManager()
-  return HttpResponse('Got value: %s' % auth_mgr.AuthorizeUser(code))
+  foursquare_cred = auth_manager.FoursquareAuthManager().AuthorizeUser(code)
+
+  mapd_credentials = session_manager.GetCredentials()
+  mapd_credentials.SetFoursquareCredentials(foursquare_cred)
+  session_manager.SetCredentials(mapd_credentials)
+
+  context = Context({
+    'is_authorized' : foursquare_cred,
+  })
+
+  return HttpResponse(loader.get_template('base.html').render(context))
 
 def DefaultHandler(request):
   """Default handler for all pages that do not match any registered handler.
   """
-  mapd_credentials = SessionManager.GetCredentials(request)
+  session_manager = SessionManager(request.session)
+  mapd_credentials = session_manager.GetCredentials()
   if not mapd_credentials.is_authorized:
     return HttpResponseRedirect(auth_manager.FoursquareAuthManager()
         .GetAuthorizationURL())

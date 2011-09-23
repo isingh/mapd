@@ -1,5 +1,8 @@
+from mapd.auth import credentials
 from mapd.config import foursquare_settings
 from mapd.util import net_util
+
+import json
 
 _ACCESS_TOKEN_URL = 'https://foursquare.com/oauth2/access_token?client_id=' \
     '%s&client_secret=%s&grant_type=authorization_code&redirect_uri=%s' \
@@ -38,10 +41,14 @@ class FoursquareAuthManager(AuthManager):
     """
     access_token_url = _ACCESS_TOKEN_URL % code
     raw_json = net_util.GenericFetchUrl(access_token_url)
-    if raw_json:
-      return raw_json.read()
-    else:
-      return 'None'
+    if not raw_json:
+      return None
+
+    response = json.loads(raw_json.read())
+    if 'access_token' in response:
+      return credentials.FoursquareCredentials(response['access_token'])
+
+    return None
 
   def GetAuthorizationURL(self):
     """Return the FourSquare URL that the user needs to be redirected to, to

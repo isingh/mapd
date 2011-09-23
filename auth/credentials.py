@@ -12,15 +12,26 @@ class MapdCredentials(object):
 
   def AddFoursquareAccess(self, access_token):
     """Add this user's foursquare credentials.
+
+    Args:
+      access_token - The access token given by Foursquare for this user.
     """
     self._credentials.foursquare = FoursquareCredentials(access_token)
+
+  def SetFoursquareCredentials(self, foursquare_cred):
+    """Set the credentials for foursquare in the given credentials.
+
+    Args:
+      foursquare_cred - Foursquare credentials.
+    """
+    self._credentials.foursquare = foursquare_cred
 
   @property
   def is_authorized(self):
     """Check if the user is logged in, or not.
     """
     if self._credentials.foursquare and \
-        hasattr(self._credentials.foursquare, 'access_token'):
+        self._credentials.foursquare.access_token:
       return True
     return False
 
@@ -40,5 +51,5 @@ class FoursquareCredentials(object):
     self._access_token = access_token
 
   @property
-  def acces_token(self):
+  def access_token(self):
     return self._access_token
