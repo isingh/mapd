@@ -47,16 +47,28 @@ def GetLatestCheckins(token, limit=_LATEST_CHECINS_LIMIT):
   if not success or code != 200:
     logging.error('Unable to retreive the checkins for the user')
     return []
-  all_checkins = []
+  all_checkins = {}
   for curr_checkin in response['checkins']['items']:
     try:
+      venue_id = curr_checkin['venue']['id']
+
+      # The user has already been to this venue.
+      if venue_id in all_checkins.keys():
+        all_checkins[venue_id].num_checkins += 1
+        continue
+
+      # We are seeing this venue for the first time. Initialize and add.
       checkin = Bunch()
+      checkin.num_checkins = 1
       checkin.venue_name = curr_checkin['venue']['name']
-      checkin.venue_city = '%s, %s' % \
+      checkin.venue_location = Bunch()
+      checkin.venue_location.city = '%s, %s' % \
           (curr_checkin['venue']['location']['city'],
           curr_checkin['venue']['location']['state'])
-      all_checkins.append(checkin)
+      checkin.venue_location.lat = curr_checkin['venue']['location']['lat']
+      checkin.venue_location.lng = curr_checkin['venue']['location']['lng']
+      all_checkins[venue_id] = checkin
     except:
       pass
-  return all_checkins
+  return all_checkins.values()
 

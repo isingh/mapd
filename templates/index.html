@@ -1,13 +1,34 @@
 {% extends "base.html" %}
 
-{% block title %}
-  Mapd - Map yourself
+{% block client_javascript %}
+    function clientInit() {
+      alert('client init');
+      alert(map);
+      {% for checkin in recent_checkins %}
+      addMarker(
+        {{ checkin.venue_location.lat }},
+        {{ checkin.venue_location.lng }},
+        "{{ checkin.venue_name }}",
+        "{{ checkin.venue_name }}"
+        );
+      {% endfor %}
+    }
+
+    function addMarker(lat, lng, title, content) {
+      var latlng = new google.maps.LatLng(lat, lng);
+      var marker = new google.maps.Marker({
+        position: latlng,
+        title: title
+      });
+      marker.setMap(map);
+
+      var markerInfo = new google.maps.InfoWindow({ content: content });
+      google.maps.event.addListener(marker, 'click', function() {
+        markerInfo.open(map, marker);
+      });
+    }
 {% endblock %}
 
-{% block body_content %}
-  <ul>
-    {% for checkin in recent_checkins %}
-      <li> {{ checkin.venue_name }} in {{ checkin.venue_city }} </li>
-    {% endfor %}
-  </ul>
+{% block title %}
+  Mapd - Map yourself
 {% endblock %}
